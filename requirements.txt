@@ -1,0 +1,12 @@
+# Telegram bot
+python-telegram-bot==21.6
+
+# Fayl o'qish kutubxonalari
+python-docx==1.1.2       # .docx
+pdfplumber==0.11.4       # .pdf (asosiy)
+PyPDF2==3.0.1            # .pdf (zaxira)
+openpyxl==3.1.5          # .xlsx
+xlrd==2.0.1              # .xls
+
+# Muhit o'zgaruvchilari
+python-dotenv==1.0.1
