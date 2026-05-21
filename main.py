@@ -162,9 +162,10 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         # ── Natijani tekshirish ───────────────────────────────────────────────
         if not result.success or not result.output_text.strip():
             error_detail = "\n".join(f"• {e}" for e in result.errors[:5])
+            fallback = "Noma'lum sabab"
             await status_msg.edit_text(
                 f"⚠️ Konvertatsiya qilingan savollar topilmadi.\n\n"
-                f"Xatoliklar:\n{error_detail or 'Noma'lum sabab'}"
+                f"Xatoliklar:\n{error_detail or fallback}"
             )
             return
 
