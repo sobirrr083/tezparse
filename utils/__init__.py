@@ -73,3 +73,6 @@ def list_converters() -> str:
 
 
 __all__ = ["REGISTRY", "BaseConverter", "ConversionResult", "list_converters"]
+from .file_reader import extract_text, SUPPORTED_EXTENSIONS
+
+__all__ = ["extract_text", "SUPPORTED_EXTENSIONS"]
