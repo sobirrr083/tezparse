@@ -2,15 +2,6 @@
 utils/file_reader.py
 ---------------------
 Fayl turlaridan matn chiqarish.
-Barcha converterlar shu moduldan foydalanadi.
-
-Qo'llab-quvvatlanuvchi formatlar:
-  .txt  — UTF-8, cp1251, latin-1
-  .docx — python-docx
-  .doc  — antiword (system) yoki textract
-  .pdf  — pdfplumber (ustuvor) → PyPDF2 (zaxira)
-  .xlsx — openpyxl
-  .xls  — xlrd
 """
 
 from pathlib import Path
@@ -19,16 +10,12 @@ SUPPORTED_EXTENSIONS = {".txt", ".docx", ".doc", ".pdf", ".xlsx", ".xls"}
 
 
 def extract_text(filepath: str) -> str:
-    """
-    Fayldan matn chiqarish.
-    Xatolikda ImportError yoki ValueError ko'tariladi.
-    """
     ext = Path(filepath).suffix.lower()
 
     if ext not in SUPPORTED_EXTENSIONS:
         raise ValueError(
-            f"Qo'llab-quvvatlanmagan format: '{ext}'\n"
-            f"Mumkin bo'lgan formatlar: {', '.join(sorted(SUPPORTED_EXTENSIONS))}"
+            f"Qollab-quvvatlanmagan format: '{ext}'\n"
+            f"Mumkin bolgan formatlar: {', '.join(sorted(SUPPORTED_EXTENSIONS))}"
         )
 
     if ext == ".txt":
@@ -45,9 +32,7 @@ def extract_text(filepath: str) -> str:
         return _read_xls(filepath)
 
 
-# ── Ichki o'quvchilar ─────────────────────────────────────────────────────────
-
-def _read_txt(filepath: str) -> str:
+def _read_txt(filepath):
     for enc in ("utf-8", "utf-8-sig", "cp1251", "latin-1"):
         try:
             with open(filepath, encoding=enc) as f:
@@ -58,7 +43,7 @@ def _read_txt(filepath: str) -> str:
         return f.read()
 
 
-def _read_docx(filepath: str) -> str:
+def _read_docx(filepath):
     try:
         from docx import Document
     except ImportError:
@@ -72,7 +57,7 @@ def _read_docx(filepath: str) -> str:
     return "\n".join(parts)
 
 
-def _read_doc(filepath: str) -> str:
+def _read_doc(filepath):
     import subprocess
     try:
         r = subprocess.run(
@@ -86,14 +71,10 @@ def _read_doc(filepath: str) -> str:
         import textract
         return textract.process(filepath).decode("utf-8", errors="replace")
     except ImportError:
-        raise ImportError(
-            ".doc uchun antiword (system) yoki textract (pip) kerak.\n"
-            "Railway'da: nixpacks.toml orqali antiword o'rnating."
-        )
+        raise ImportError(".doc uchun antiword yoki textract kerak.")
 
 
-def _read_pdf(filepath: str) -> str:
-    # pdfplumber — aniqroq
+def _read_pdf(filepath):
     try:
         import pdfplumber
         pages = []
@@ -105,8 +86,6 @@ def _read_pdf(filepath: str) -> str:
         return "\n".join(pages)
     except ImportError:
         pass
-
-    # PyPDF2 — zaxira
     try:
         import PyPDF2
         pages = []
@@ -119,7 +98,7 @@ def _read_pdf(filepath: str) -> str:
         raise ImportError("PDF uchun: pip install pdfplumber")
 
 
-def _read_xlsx(filepath: str) -> str:
+def _read_xlsx(filepath):
     try:
         import openpyxl
     except ImportError:
@@ -136,7 +115,7 @@ def _read_xlsx(filepath: str) -> str:
     return "\n".join(lines)
 
 
-def _read_xls(filepath: str) -> str:
+def _read_xls(filepath):
     try:
         import xlrd
     except ImportError:
